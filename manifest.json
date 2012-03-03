@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "grab the url and download with curl",
   "browser_action": {
-    "default_icon": "icon.png"
+      "default_icon": "icon.png"
   },
   "permissions": [
       "tabs", "http://*/*", "https://*/*", "contextMenus"
