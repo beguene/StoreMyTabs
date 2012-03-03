@@ -1,0 +1,13 @@
+{
+  "name": "grabUrl",
+  "version": "1.0",
+  "description": "grab the url and download with curl",
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+      "tabs", "http://*/*", "https://*/*", "contextMenus"
+  ],
+    "background_page": "background.html",
+    "options_page": "options.html"
+}

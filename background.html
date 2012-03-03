@@ -1,0 +1,42 @@
+<script>
+  // init
+  if (!localStorage['pagesnooze_keys']) {
+    localStorage.setItem('pagesnooze_keys', JSON.stringify([]));
+  }
+  
+  if (!localStorage['pagesnooze_links']) {
+    localStorage.setItem('pagesnooze_links', JSON.stringify({}));
+  }
+  
+  // Called when the user clicks on the browser action.
+  chrome.browserAction.onClicked.addListener(function(tab) {
+    bookmark(tab);
+    alert('Url saved');
+  });
+  
+  function bookmark(tab, days) {
+    var keys  = JSON.parse(localStorage['pagesnooze_keys']);
+    var links = JSON.parse(localStorage['pagesnooze_links']);
+    
+    if (!keys) { keys = []; }
+    if (!links) { links = {}; }
+     
+    chrome.tabs.remove(tab.id);
+    var key = (Date.now()*1 + days*86400000) + '';
+    keys.push(key);
+    
+    if (!links[key]) {
+      links[key] = [];
+    }
+    links[key].push({
+      url: tab.url,
+      title: tab.title,
+      favicon: tab.favIconUrl
+    });
+    
+//    chrome.browserAction.setBadgeText({text: 'BADGE'});
+    localStorage.setItem('pagesnooze_keys', JSON.stringify(keys.sort()));
+    localStorage.setItem('pagesnooze_links', JSON.stringify(links));
+  }
+
+</script>
