@@ -1,9 +1,13 @@
 <html>
 <head>
+  <link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.18.custom.css" />
+  <script type="text/javascript" src="libs/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="libs/jquery-ui-1.8.18.custom.min.js"></script>
   <title>Grab Url</title>
   <style type="text/css" media="screen">
     html, body {
       background: #000;
+        color:white;
     }
     body {
       font-family: Geneva, "MS Sans Serif", sans-serif;
@@ -71,7 +75,7 @@
         background: -moz-linear-gradient(top,  #575757,  #888);
         filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
     }
-    #tableLinks { display: none; width: 100%; border-collapse:collapse;border-spacing:0;}
+    #tableLinks { width: 100%; border-collapse:collapse;border-spacing:0;}
     #tableLinks tr:nth-child(2n) { background: #000; }
     #tableLinks td { padding: 3px; }
     #tableLinks .clear a { text-decoration:none; font-weight: bold; color: #888 }
@@ -101,7 +105,8 @@ String.prototype.lpad = function(padString, length) {
 }
 
 // Restores select box state to saved value from localStorage.
-function saveOptions() {
+
+function loadOptions() {
   var links = JSON.parse(localStorage['grab_links']);
   if (!links || links.length == 0) {
     return;
@@ -109,8 +114,8 @@ function saveOptions() {
   
   for (var i = 0; i < links.length; i++) {
     var key = i;
-    
-    var tr = document.createElement('tr');
+    $('#tableLink > tbody').append('<tr></tr>');
+   /* var tr = document.createElement('tr');
     var tdFavicon = document.createElement('td');
     var tdTitle = document.createElement('td');
     var tdDelete = document.createElement('td');
@@ -122,6 +127,10 @@ function saveOptions() {
       img.setAttribute('height', 16); 
       tdFavicon.appendChild(img);
     }
+*/
+    $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+    $('#tableLink tr:last').append('<td><a href="'+links[i].url+'", target="_blank" height="16">'+links[i].title +'</a></td>');
+/*
     
     var a = document.createElement('a');
     a.setAttribute('href', links[i].url);
@@ -144,9 +153,9 @@ function saveOptions() {
     
     var table = document.getElementById('tableLinks');
     table.appendChild(tr);
-    table.style.display = 'block';
+    table.style.display = 'block';*/
   }
-}
+};
 
 function bk_clear(link) {
   var links = JSON.parse(localStorage['grab_links']);
@@ -161,16 +170,18 @@ function clearAll() {
     window.location.reload();
   }
 }
+$(document).ready(function() {
+    loadOptions();
+ });
 
 </script>
 
-<body onload="saveOptions()">
+<body>
 <div id='container'>
-  <table id='tableLinks'>
-    <tr>
-      <td colspan='2'></td>
-    </tr>
-  </table>
+    
+    <table id="tableLink">
+        <tbody></tbody>
+    </table>
   <a href='' id='clear_all' class='button gray' onclick='clearAll();return false'>Clear All</a>
   </div>
 </body>
