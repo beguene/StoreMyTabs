@@ -158,13 +158,14 @@ function saveFile(link) {
 
 function loadOptions() {
   var links = JSON.parse(localStorage['grab_links']);
+  var NB_NEW_LINKS = 5;
   if (!links || links.length == 0) {
     return;
   }
   
-  for (var i = 0; i < links.length; i++) {
+  for (var i = links.length - 1; i > 0; i--) {
       var tableIdName = "tableLinkNew";
-     if (i > 3 ) {
+      if ( links.length > NB_NEW_LINKS && i < links.length - NB_NEW_LINKS ) {
            tableIdName = "tableLinkOld";
       }
     $('#'+tableIdName+' > tbody').append('<tr></tr>');
@@ -176,6 +177,8 @@ function loadOptions() {
     $('#'+tableIdName+' tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
     $('#'+tableIdName+' tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
     $('#'+tableIdName+' tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
+
+    $('#plainText').append(links[i].url+'<br/>');
   }
 };
 
@@ -184,7 +187,6 @@ $(document).ready(function() {
   if (!links || links.length == 0) {
     $('#clear_all').hide();
   }
-    $("#container").draggable({ axis: "x" });
     loadOptions();
     $( "#tabs" ).tabs();
     
@@ -198,7 +200,7 @@ $(document).ready(function() {
 	<ul>
 		<li><a href="#tabs-1">New</a></li>
 		<li><a href="#tabs-2">Old</a></li>
-		<li><a href="#tabs-3">Aenean lacinia</a></li>
+		<li><a href="#tabs-3">Text</a></li>
 	</ul>
 	<div id="tabs-1">
     <table id="tableLinkNew" class="tableLink">
@@ -211,7 +213,7 @@ $(document).ready(function() {
     </table>
 	</div>
 	<div id="tabs-3">
-		<p></p>
+		<p id="plainText"></p>
 	</div>
 </div>
     
