@@ -166,7 +166,8 @@ function loadOptions() {
     $('#'+tableIdName+' tr:last').append('<td width="100px"><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
     $('#'+tableIdName+' tr:last td:last').after('<td width="100px"><p class="date">'+date+'</p></td>');
     if (options.faviconDisabled) {
-        $('#'+tableIdName+' tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+        $('#'+tableIdName+' tr:last').append('<td><img class="image" src="'+links[i].favicon+'", width="16" height="16"</td>');
+    } else {
     }
     $('#'+tableIdName+' tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
     $('#'+tableIdName+' tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
@@ -184,7 +185,7 @@ $(document).ready(function() {
     $('#clear_all').hide();
   }
   $( "#check" ).button();
-  $('#check').prop("checked",!options.faviconDisabled).button("refresh");;
+  $('#check').prop("checked",!options.faviconDisabled).button("refresh");
   var faviconDisabled = options.faviconDisabled;
     $('#check').click (function () {
         var thisCheck = $(this);
@@ -192,7 +193,6 @@ $(document).ready(function() {
             options.faviconDisabled = false;
             } else {
             options.faviconDisabled = true;
-
             }
             localStorage.setItem('options', JSON.stringify(options));
     });
