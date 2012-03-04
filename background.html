@@ -13,8 +13,9 @@
             url: tab.url,
             title: tab.title,
             favicon: tab.favIconUrl,
-            date: new Date()
         }
+        var date = new Date();
+        result.date = date.getTime();
         return result;
     }();
     links.push(linkObject);

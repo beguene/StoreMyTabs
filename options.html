@@ -137,13 +137,12 @@ function loadOptions() {
     a.appendChild(link);
 */    
     
-    //var date = links[i].date.getDate()+"-"+links[i].getMonth+"-"+date.getFullYear();
-    //var date = links[i].date;
-    //var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
+    var date = new Date(links[i].date*1);
+    var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
     $('#tableLink tr:last').append('<td><a href=\"\" >\u00D7</a></td>');
     $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
     $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'", target="_blank" height="16">'+links[i].title +'</a></td>');
-    //$('#tableLink tr:last td:last').after('<td>'+date+'</td>');
+    $('#tableLink tr:last td:last').after('<td>'+date+'</td>');
 /*
     var b = document.createElement('a');
     b.setAttribute('onclick', 'bk_clear(\''+key+'\',\''+links[i].url+'\');return false;');
