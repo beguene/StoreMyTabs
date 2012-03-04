@@ -77,8 +77,9 @@
     }
     #tableLink { width: 100%; border-spacing:5;}
     #tableLink a { color: #fff; }
-    #tableLink tr:nth-child(2n) { background: #000; }
-    #tableLink td { padding: 1px; }
+    #tableLink tr td#tableUrl a:hover { color: gray; }
+    #tableLink tr:nth-child(2n) td#tableUrl { background: #000; }
+    #tableLink td { padding: 1px 4px 1px 4px; }
     .delete { text-decoration:none ; color: #fff }
     #restore {font-size: 75%;}
     #tableLink a:hover { color: #fff }
@@ -138,60 +139,27 @@ function loadOptions() {
     return;
   }
   
+  for (var j = 0; j < 30; j++) {
   for (var i = 0; i < links.length; i++) {
     var key = i;
     $('#tableLink > tbody').append('<tr></tr>');
-   /* var tr = document.createElement('tr');
-    var tdFavicon = document.createElement('td');
-    var tdTitle = document.createElement('td');
-    var tdDelete = document.createElement('td');
     
-    if (links[i].favicon) {
-      var img = document.createElement('img');
-      img.setAttribute('src', links[i].favicon); 
-      img.setAttribute('width', 16); 
-      img.setAttribute('height', 16); 
-      tdFavicon.appendChild(img);
-    }
-*/
-/*
-    
-    var a = document.createElement('a');
-    a.setAttribute('href', links[i].url);
-    a.setAttribute('target', '_blank');
-    var link = document.createTextNode(links[i].title);
-    a.appendChild(link);
-*/    
-    
-    var date = new Date(links[i].date*1);
+    var date = new Date(links[i].date);
     var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
     $('#tableLink tr:last').append('<td ><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
     $('#tableLink tr:last td:last').after('<td><p class="date">'+date+'</p></td>');
     $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
-    $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
+    $('#tableLink tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
     $('#tableLink tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
-  
-/*
-    var b = document.createElement('a');
-    b.setAttribute('onclick', 'bk_clear(\''+key+'\',\''+links[i].url+'\');return false;');
-    b.setAttribute('href', '');
-    var t = document.createTextNode("\u00D7");
-    b.appendChild(t);
-    
-    tdTitle.appendChild(a)
-    tdDelete.appendChild(b)
-    tdDelete.setAttribute('class','clear');
-    tr.appendChild(tdDelete);
-    tr.appendChild(tdFavicon);
-    tr.appendChild(tdTitle);
-    
-    var table = document.getElementById('tableLinks');
-    table.appendChild(tr);
-    table.style.display = 'block';*/
+  }
   }
 };
 
 $(document).ready(function() {
+  var links = JSON.parse(localStorage['grab_links']);
+  if (!links || links.length == 0) {
+    $('#clear_all').hide();
+  }
     loadOptions();
  });
 
