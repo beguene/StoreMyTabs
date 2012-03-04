@@ -75,11 +75,11 @@
         background: -moz-linear-gradient(top,  #575757,  #888);
         filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
     }
-    #tableLinks { width: 100%; border-collapse:collapse;border-spacing:0;}
-    #tableLinks tr:nth-child(2n) { background: #000; }
-    #tableLinks td { padding: 3px; }
-    #tableLinks .clear a { text-decoration:none; font-weight: bold; color: #888 }
-    #tableLinks .clear a:hover { color: #000 }
+    #tableLink { width: 100%; border-spacing:5;}
+    #tableLink tr:nth-child(2n) { background: #000; }
+    #tableLink td { padding: 1px; }
+    #tableLink a { color: #fff }
+    #tableLink .clear a:hover { color: #000 }
     
     #tableLinks #cell_date_title { font-size: 10px; }
     #tableLinks .cell_date { width: 150px; font-size: 93%; color: #777}
@@ -128,8 +128,6 @@ function loadOptions() {
       tdFavicon.appendChild(img);
     }
 */
-    $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
-    $('#tableLink tr:last').append('<td><a href="'+links[i].url+'", target="_blank" height="16">'+links[i].title +'</a></td>');
 /*
     
     var a = document.createElement('a');
@@ -137,7 +135,16 @@ function loadOptions() {
     a.setAttribute('target', '_blank');
     var link = document.createTextNode(links[i].title);
     a.appendChild(link);
+*/    
     
+    //var date = links[i].date.getDate()+"-"+links[i].getMonth+"-"+date.getFullYear();
+    //var date = links[i].date;
+    //var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
+    $('#tableLink tr:last').append('<td><a href=\"\" >\u00D7</a></td>');
+    $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+    $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'", target="_blank" height="16">'+links[i].title +'</a></td>');
+    //$('#tableLink tr:last td:last').after('<td>'+date+'</td>');
+/*
     var b = document.createElement('a');
     b.setAttribute('onclick', 'bk_clear(\''+key+'\',\''+links[i].url+'\');return false;');
     b.setAttribute('href', '');

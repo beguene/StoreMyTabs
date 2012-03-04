@@ -8,12 +8,16 @@
     
     if (!links) { var links = []; }
     chrome.tabs.remove(tab.id);
-    
-    links.push({
-      url: tab.url,
-      title: tab.title,
-      favicon: tab.favIconUrl
-    });
+    var linkObject = function createLinkObject() {
+        var result = {
+            url: tab.url,
+            title: tab.title,
+            favicon: tab.favIconUrl,
+            date: new Date()
+        }
+        return result;
+    }();
+    links.push(linkObject);
     
 //    chrome.browserAction.setBadgeText({text: 'BADGE'});
     localStorage.setItem('grab_links', JSON.stringify(links));
