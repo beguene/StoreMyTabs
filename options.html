@@ -75,14 +75,14 @@
         background: -moz-linear-gradient(top,  #575757,  #888);
         filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
     }
-    #tableLink { width: 100%; border-spacing:5;}
-    #tableLink a { color: #fff; }
-    #tableLink tr td#tableUrl a:hover { color: gray; }
-    #tableLink tr:nth-child(2n) td#tableUrl { background: #000; }
-    #tableLink td { padding: 1px 4px 1px 4px; }
+    .tableLink { width: 100%; border-spacing:5;}
+    .tableLink a { color: #000; }
+    .tableLink tr td#tableUrl a:hover { color: gray; }
+    /*.tableLink tr:nth-child(2n) td#tableUrl { background: #000; }*/
+    .tableLink td { padding: 1px 4px 1px 4px; }
     .delete { text-decoration:none ; color: #fff }
-    #restore {font-size: 75%;}
-    #tableLink a:hover { color: #fff }
+    #restore {font-size: 75%;color:#fff;}
+    .tableLink a:hover { color: #fff }
     
     .date { width: 80px; font-size: 90%; color: #777}
     
@@ -125,10 +125,33 @@ function restore(link) {
 }
 
 function clearAll() {
-  if(confirm('Do you really want to clear all bookmarked tabs?')) {
-    localStorage.setItem('grab_links', JSON.stringify([]));
-    window.location.reload();
-  }
+
+    
+    var $dialog = $('<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>')
+			.dialog({
+            resizable: false,
+			height:240,
+            width: 560,
+			modal: true,
+			buttons: {
+				"Delete all items": function() {
+					$( this ).dialog( "close" );
+                    localStorage.setItem('grab_links', JSON.stringify([]));
+                    window.location.reload();
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+                    
+			});
+$dialog.dialog('open');
+}
+function saveFile(link) {
+  var url = links[link].url;
+  chrome.tabs.create({
+              url: url
+          });
 }
 
 // Restores select box state to saved value from localStorage.
@@ -139,19 +162,20 @@ function loadOptions() {
     return;
   }
   
-  for (var j = 0; j < 30; j++) {
   for (var i = 0; i < links.length; i++) {
-    var key = i;
-    $('#tableLink > tbody').append('<tr></tr>');
+      var tableIdName = "tableLinkNew";
+     if (i > 3 ) {
+           tableIdName = "tableLinkOld";
+      }
+    $('#'+tableIdName+' > tbody').append('<tr></tr>');
     
     var date = new Date(links[i].date);
     var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
-    $('#tableLink tr:last').append('<td ><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
-    $('#tableLink tr:last td:last').after('<td><p class="date">'+date+'</p></td>');
-    $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
-    $('#tableLink tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
-    $('#tableLink tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
-  }
+    $('#'+tableIdName+' tr:last').append('<td ><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
+    $('#'+tableIdName+' tr:last td:last').after('<td><p class="date">'+date+'</p></td>');
+    $('#'+tableIdName+' tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+    $('#'+tableIdName+' tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
+    $('#'+tableIdName+' tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
   }
 };
 
@@ -160,18 +184,40 @@ $(document).ready(function() {
   if (!links || links.length == 0) {
     $('#clear_all').hide();
   }
+    $("#container").draggable({ axis: "x" });
     loadOptions();
+    $( "#tabs" ).tabs();
+    
  });
 
 </script>
 
 <body>
 <div id='container'>
-    
-    <table id="tableLink">
+<div id="tabs">
+	<ul>
+		<li><a href="#tabs-1">New</a></li>
+		<li><a href="#tabs-2">Old</a></li>
+		<li><a href="#tabs-3">Aenean lacinia</a></li>
+	</ul>
+	<div id="tabs-1">
+    <table id="tableLinkNew" class="tableLink">
         <tbody></tbody>
     </table>
+	</div>
+	<div id="tabs-2">
+    <table id="tableLinkOld" class="tableLink">
+        <tbody></tbody>
+    </table>
+	</div>
+	<div id="tabs-3">
+		<p></p>
+	</div>
+</div>
+    
+    
   <a href='' id='clear_all' class='button gray' onclick='clearAll();return false'>Clear All</a>
+  <a href='' id='save_file' class='button gray' onclick='saveFile();return false'>Save File</a>
   </div>
 </body>
 </html>
