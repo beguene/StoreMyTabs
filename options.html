@@ -1,6 +1,6 @@
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.8.18.custom.css" />
+  <link rel="stylesheet" type="text/css" href="css/vader/jquery-ui-1.8.18.custom.css" />
   <script type="text/javascript" src="libs/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="libs/jquery-ui-1.8.18.custom.min.js"></script>
   <title>Grab Url</title>
@@ -24,7 +24,6 @@
       overflow: hidden;
     }
     h2 { margin: 0; color:white;}
-    a:hover { color: #fff }
     /* button 
 ---------------------------------------------- */
     .button {
@@ -76,7 +75,7 @@
         filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
     }
     .tableLink { width: 100%; border-spacing:5;}
-    .tableLink a { color: #000; }
+    .tableLink a { color: #fff; }
     .tableLink tr td#tableUrl a:hover { color: gray; }
     /*.tableLink tr:nth-child(2n) td#tableUrl { background: #000; }*/
     .tableLink td { padding: 1px 4px 1px 4px; }
@@ -98,13 +97,6 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-// http://sajjadhossain.com/2008/10/31/javascript-string-trimming-and-padding/
-String.prototype.lpad = function(padString, length) {
-	var str = this;
-    while (str.length < length)
-        str = padString + str;
-    return str;
-}
 function bk_clear(link) {
   var links = JSON.parse(localStorage['grab_links']);
     links.remove(link);
@@ -125,8 +117,6 @@ function restore(link) {
 }
 
 function clearAll() {
-
-    
     var $dialog = $('<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>')
 			.dialog({
             resizable: false,
@@ -143,10 +133,10 @@ function clearAll() {
 					$( this ).dialog( "close" );
 				}
 			}
-                    
 			});
-$dialog.dialog('open');
+    $dialog.dialog('open');
 }
+
 function saveFile(link) {
   var url = links[link].url;
   chrome.tabs.create({
@@ -158,6 +148,7 @@ function saveFile(link) {
 
 function loadOptions() {
   var links = JSON.parse(localStorage['grab_links']);
+  var options = JSON.parse(localStorage['options']);
   var NB_NEW_LINKS = 5;
   if (!links || links.length == 0) {
     return;
@@ -171,22 +162,40 @@ function loadOptions() {
     $('#'+tableIdName+' > tbody').append('<tr></tr>');
     
     var date = new Date(links[i].date);
-    var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
-    $('#'+tableIdName+' tr:last').append('<td ><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
-    $('#'+tableIdName+' tr:last td:last').after('<td><p class="date">'+date+'</p></td>');
-    $('#'+tableIdName+' tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+    var date = date.getDate()+"-"+(date.getMonth()+1)+"-"+date.getFullYear();
+    $('#'+tableIdName+' tr:last').append('<td width="100px"><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
+    $('#'+tableIdName+' tr:last td:last').after('<td width="100px"><p class="date">'+date+'</p></td>');
+    if (options.faviconDisabled) {
+        $('#'+tableIdName+' tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
+    }
     $('#'+tableIdName+' tr:last td:last').after('<td id="tableUrl"><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
     $('#'+tableIdName+' tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
 
     $('#plainText').append(links[i].url+'<br/>');
   }
+  
 };
 
 $(document).ready(function() {
   var links = JSON.parse(localStorage['grab_links']);
+  var options = JSON.parse(localStorage['options']);
+    if (!options) { var options = {}; }
   if (!links || links.length == 0) {
     $('#clear_all').hide();
   }
+  $( "#check" ).button();
+  $('#check').prop("checked",!options.faviconDisabled).button("refresh");;
+  var faviconDisabled = options.faviconDisabled;
+    $('#check').click (function () {
+        var thisCheck = $(this);
+        if (thisCheck.is (':checked')) {
+            options.faviconDisabled = false;
+            } else {
+            options.faviconDisabled = true;
+
+            }
+            localStorage.setItem('options', JSON.stringify(options));
+    });
     loadOptions();
     $( "#tabs" ).tabs();
     
@@ -201,6 +210,7 @@ $(document).ready(function() {
 		<li><a href="#tabs-1">New</a></li>
 		<li><a href="#tabs-2">Old</a></li>
 		<li><a href="#tabs-3">Text</a></li>
+		<li><a href="#tabs-4">Options</a></li>
 	</ul>
 	<div id="tabs-1">
     <table id="tableLinkNew" class="tableLink">
@@ -215,11 +225,13 @@ $(document).ready(function() {
 	<div id="tabs-3">
 		<p id="plainText"></p>
 	</div>
+	<div id="tabs-4">
+        <input type="checkbox" id="check" /><label for="check">Display Favicon</label>
+	</div>
 </div>
     
     
   <a href='' id='clear_all' class='button gray' onclick='clearAll();return false'>Clear All</a>
-  <a href='' id='save_file' class='button gray' onclick='saveFile();return false'>Save File</a>
   </div>
 </body>
 </html>

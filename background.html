@@ -3,6 +3,9 @@
   if (!localStorage['grab_links']) {
     localStorage.setItem('grab_links', JSON.stringify([]));
   }
+  if (!localStorage['options']) {
+      localStorage.setItem('options', JSON.stringify({faviconDisabled : true}));
+  }
   function bookmark(tab) {
     var links = JSON.parse(localStorage['grab_links']);
     
