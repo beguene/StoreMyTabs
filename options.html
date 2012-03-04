@@ -80,10 +80,10 @@
     #tableLink tr:nth-child(2n) { background: #000; }
     #tableLink td { padding: 1px; }
     .delete { text-decoration:none ; color: #fff }
+    #restore {font-size: 75%;}
     #tableLink a:hover { color: #fff }
     
-    #tableLinks #cell_date_title { font-size: 10px; }
-    #tableLinks .cell_date { width: 150px; font-size: 93%; color: #777}
+    .date { width: 80px; font-size: 90%; color: #777}
     
     #clear_all { margin-top: 10px; float: right; display: block; font-size: 93%; padding: 8px 16px}
   </style>
@@ -165,11 +165,11 @@ function loadOptions() {
     
     var date = new Date(links[i].date*1);
     var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
-    $('#tableLink tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
+    $('#tableLink tr:last').append('<td ><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
+    $('#tableLink tr:last td:last').after('<td><p class="date">'+date+'</p></td>');
     $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
     $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
-    $('#tableLink tr:last td:last').after('<td>'+date+'</td>');
-    $('#tableLink tr:last td:last').after('<td><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
+    $('#tableLink tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
   
 /*
     var b = document.createElement('a');
