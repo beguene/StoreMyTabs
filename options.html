@@ -76,10 +76,11 @@
         filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
     }
     #tableLink { width: 100%; border-spacing:5;}
+    #tableLink a { color: #fff; }
     #tableLink tr:nth-child(2n) { background: #000; }
     #tableLink td { padding: 1px; }
-    #tableLink a { color: #fff }
-    #tableLink .clear a:hover { color: #000 }
+    .delete { text-decoration:none ; color: #fff }
+    #tableLink a:hover { color: #fff }
     
     #tableLinks #cell_date_title { font-size: 10px; }
     #tableLinks .cell_date { width: 150px; font-size: 93%; color: #777}
@@ -102,6 +103,31 @@ String.prototype.lpad = function(padString, length) {
     while (str.length < length)
         str = padString + str;
     return str;
+}
+function bk_clear(link) {
+  var links = JSON.parse(localStorage['grab_links']);
+    links.remove(link);
+  localStorage.setItem('grab_links', JSON.stringify(links));
+  window.location.reload();
+}
+
+function restore(link) {
+  var links = JSON.parse(localStorage['grab_links']);
+  var url = links[link].url;
+    links.remove(link);
+  localStorage.setItem('grab_links', JSON.stringify(links));
+  window.location.reload();
+  chrome.tabs.create({
+              url: url,
+              active: false
+          });
+}
+
+function clearAll() {
+  if(confirm('Do you really want to clear all bookmarked tabs?')) {
+    localStorage.setItem('grab_links', JSON.stringify([]));
+    window.location.reload();
+  }
 }
 
 // Restores select box state to saved value from localStorage.
@@ -139,10 +165,12 @@ function loadOptions() {
     
     var date = new Date(links[i].date*1);
     var date = date.getDate()+"-"+date.getMonth()+"-"+date.getFullYear();
-    $('#tableLink tr:last').append('<td><a href=\"\" >\u00D7</a></td>');
+    $('#tableLink tr:last').append('<td><a class="delete" href="" onclick=\'bk_clear('+i+');return false;\'>\u00D7</a></td>');
     $('#tableLink tr:last').append('<td><img src="'+links[i].favicon+'", width="16" height="16"</td>');
-    $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'", target="_blank" height="16">'+links[i].title +'</a></td>');
+    $('#tableLink tr:last td:last').after('<td><a href="'+links[i].url+'" target="_blank">'+links[i].title +'</a></td>');
     $('#tableLink tr:last td:last').after('<td>'+date+'</td>');
+    $('#tableLink tr:last td:last').after('<td><a href="" target="_blank" id="restore" class="button gray" onclick=\'restore('+i+');return false;\'>Restore</a></td>');
+  
 /*
     var b = document.createElement('a');
     b.setAttribute('onclick', 'bk_clear(\''+key+'\',\''+links[i].url+'\');return false;');
@@ -163,19 +191,6 @@ function loadOptions() {
   }
 };
 
-function bk_clear(link) {
-  var links = JSON.parse(localStorage['grab_links']);
-    links.remove(link);
-  localStorage.setItem('grab_links', JSON.stringify(links));
-  window.location.reload();
-}
-
-function clearAll() {
-  if(confirm('Do you really want to clear all bookmarked tabs?')) {
-    localStorage.setItem('grab_links', JSON.stringify([]));
-    window.location.reload();
-  }
-}
 $(document).ready(function() {
     loadOptions();
  });
