@@ -1,9 +1,10 @@
+<!DOCTYPE HTML>
 <html>
 <head>
+  <title>Grab Url</title>
   <link rel="stylesheet" type="text/css" href="css/vader/jquery-ui-1.8.18.custom.css" />
   <script type="text/javascript" src="libs/jquery-1.7.1.min.js"></script>
   <script type="text/javascript" src="libs/jquery-ui-1.8.18.custom.min.js"></script>
-  <title>Grab Url</title>
   <style type="text/css" media="screen">
     html, body {
       background: #000;
@@ -13,18 +14,17 @@
       font-family: Geneva, "MS Sans Serif", sans-serif;
         color:white;
     }
-    
     #container {
+      border: 0px solid #fff;
       min-height: 500px;
       margin: 10px auto;
       padding: 15px 15px;
       background: black;
       width: 910px;
-      border: 0px solid #fff;
       overflow: hidden;
     }
     h2 { margin: 0; color:white;}
-    /* button 
+    /* button
 ---------------------------------------------- */
     .button {
         display: inline-block;
@@ -39,7 +39,7 @@
         font: 14px/100% Arial, Helvetica, sans-serif;
         padding: .5em 2em .55em;
         text-shadow: 0 1px 1px rgba(0,0,0,.3);
-        -webkit-border-radius: .5em; 
+        -webkit-border-radius: .5em;
         -moz-border-radius: .5em;
         border-radius: .5em;
         -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);
@@ -52,7 +52,7 @@
     .button:active {
         position: relative;
         top: 1px;
-    } 
+    }
     /* gray */
     .gray {
         color: #e9e9e9;
@@ -82,10 +82,14 @@
     .delete { text-decoration:none ; color: #fff }
     #restore {font-size: 75%;color:#fff;}
     .tableLink a:hover { color: #fff }
-    
+
     .date { width: 80px; font-size: 90%; color: #777}
-    
-    #clear_all { margin-top: 10px; float: right; display: block; font-size: 93%; padding: 8px 16px}
+
+    #clearAll {
+    margin-top: 10px; 
+    float: right; display: block;
+    font-size: 80%; 
+    padding: 10px 15px}
   </style>
 </head>
 <script type="text/javascript">
@@ -98,17 +102,17 @@ Array.prototype.remove = function(from, to) {
 };
 
 function bk_clear(link) {
-  var links = JSON.parse(localStorage['grab_links']);
+  var links = JSON.parse(localStorage['savedLinks']);
     links.remove(link);
-  localStorage.setItem('grab_links', JSON.stringify(links));
+  localStorage.setItem('savedLinks', JSON.stringify(links));
   window.location.reload();
 }
 
 function restore(link) {
-  var links = JSON.parse(localStorage['grab_links']);
+  var links = JSON.parse(localStorage['savedLinks']);
   var url = links[link].url;
     links.remove(link);
-  localStorage.setItem('grab_links', JSON.stringify(links));
+  localStorage.setItem('savedLinks', JSON.stringify(links));
   window.location.reload();
   chrome.tabs.create({
               url: url,
@@ -126,7 +130,7 @@ function clearAll() {
 			buttons: {
 				"Delete all items": function() {
 					$( this ).dialog( "close" );
-                    localStorage.setItem('grab_links', JSON.stringify([]));
+                    localStorage.setItem('savedLinks', JSON.stringify([]));
                     window.location.reload();
 				},
 				Cancel: function() {
@@ -144,17 +148,14 @@ function saveFile(link) {
           });
 }
 
-// Restores select box state to saved value from localStorage.
 
 function loadOptions() {
-  var links = JSON.parse(localStorage['grab_links']);
+  var links = JSON.parse(localStorage['savedLinks']);
   var options = JSON.parse(localStorage['options']);
   var NB_NEW_LINKS = 5;
-  if (!links || links.length == 0) {
-    return;
-  }
+  if (!links || links.length == 0) { return; }
   
-  for (var i = links.length - 1; i > 0; i--) {
+  for (var i = links.length - 1; i >= 0; i--) {
       var tableIdName = "tableLinkNew";
       if ( links.length > NB_NEW_LINKS && i < links.length - NB_NEW_LINKS ) {
            tableIdName = "tableLinkOld";
@@ -174,15 +175,14 @@ function loadOptions() {
 
     $('#plainText').append(links[i].url+'<br/>');
   }
-  
 };
 
 $(document).ready(function() {
-  var links = JSON.parse(localStorage['grab_links']);
+  var links = JSON.parse(localStorage['savedLinks']);
   var options = JSON.parse(localStorage['options']);
     if (!options) { var options = {}; }
   if (!links || links.length == 0) {
-    $('#clear_all').hide();
+    $('#clearAll').hide();
   }
   $( "#check" ).button();
   $('#check').prop("checked",!options.faviconDisabled).button("refresh");
@@ -197,41 +197,40 @@ $(document).ready(function() {
             localStorage.setItem('options', JSON.stringify(options));
     });
     loadOptions();
-    $( "#tabs" ).tabs();
-    
+    $( "#tabs" ).tabs({
+        event: "mouseover"
+        });
+   $( "#container" ).resizable();
  });
-
 </script>
 
 <body>
 <div id='container'>
-<div id="tabs">
-	<ul>
-		<li><a href="#tabs-1">New</a></li>
-		<li><a href="#tabs-2">Old</a></li>
-		<li><a href="#tabs-3">Text</a></li>
-		<li><a href="#tabs-4">Options</a></li>
-	</ul>
-	<div id="tabs-1">
-    <table id="tableLinkNew" class="tableLink">
-        <tbody></tbody>
-    </table>
-	</div>
-	<div id="tabs-2">
-    <table id="tableLinkOld" class="tableLink">
-        <tbody></tbody>
-    </table>
-	</div>
-	<div id="tabs-3">
-		<p id="plainText"></p>
-	</div>
-	<div id="tabs-4">
-        <input type="checkbox" id="check" /><label for="check">Display Favicon</label>
-	</div>
-</div>
-    
-    
-  <a href='' id='clear_all' class='button gray' onclick='clearAll();return false'>Clear All</a>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">New</a></li>
+            <li><a href="#tabs-2">Old</a></li>
+            <li><a href="#tabs-3">Text</a></li>
+            <li><a href="#tabs-4">Options</a></li>
+        </ul>
+        <div id="tabs-1">
+            <table id="tableLinkNew" class="tableLink">
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="tabs-2">
+            <table id="tableLinkOld" class="tableLink">
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="tabs-3">
+            <p id="plainText"></p>
+        </div>
+        <div id="tabs-4">
+            <input type="checkbox" id="check" /><label for="check">Display Favicon</label>
+        </div>
+    </div>
+  <a href='' id='clearAll' class='button gray' onclick='clearAll();return false'>Clear All</a>
   </div>
 </body>
 </html>

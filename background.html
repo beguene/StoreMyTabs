@@ -1,14 +1,15 @@
+<!DOCTYPE HTML>
+<title>Background</title>
 <script>
-  // init
-  if (!localStorage['grab_links']) {
-    localStorage.setItem('grab_links', JSON.stringify([]));
+  // initialize the store
+  if (!localStorage['savedLinks']) {
+    localStorage.setItem('savedLinks', JSON.stringify([]));
   }
   if (!localStorage['options']) {
       localStorage.setItem('options', JSON.stringify({faviconDisabled : true}));
   }
   function bookmark(tab) {
-    var links = JSON.parse(localStorage['grab_links']);
-    
+    var links = JSON.parse(localStorage['savedLinks']);
     if (!links) { var links = []; }
     chrome.tabs.remove(tab.id);
     var linkObject = function createLinkObject() {
@@ -22,15 +23,10 @@
         return result;
     }();
     links.push(linkObject);
-    
-//    chrome.browserAction.setBadgeText({text: 'BADGE'});
-    localStorage.setItem('grab_links', JSON.stringify(links));
+    localStorage.setItem('savedLinks', JSON.stringify(links));
   }
-  
-  // Called when the user clicks on the browser action.
   chrome.browserAction.onClicked.addListener(function(tab) {
     bookmark(tab);
   });
-  
 
 </script>
