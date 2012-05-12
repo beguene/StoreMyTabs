@@ -1,7 +1,7 @@
 {
-  "name": "grabUrl",
+  "name": "Store My Tabs",
   "version": "1.0",
-  "description": "grab the url and download with curl",
+  "description": "Avoid tabs overwhelm, Store your tabs !",
   "browser_action": {
       "default_icon": "icon.png"
   },

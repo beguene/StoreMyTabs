@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Grab Url</title>
+  <title>Store My Tabs</title>
   <link rel="stylesheet" type="text/css" href="css/vader/jquery-ui-1.8.18.custom.css" />
-  <script type="text/javascript" src="libs/jquery-1.7.1.min.js"></script>
-  <script type="text/javascript" src="libs/jquery-ui-1.8.18.custom.min.js"></script>
+  <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
   <style type="text/css" media="screen">
     html, body {
       background: #000;
@@ -14,6 +14,7 @@
       font-family: Geneva, "MS Sans Serif", sans-serif;
         color:white;
     }
+    h2 { margin: 0; color:white;}
     #container {
       border: 0px solid #fff;
       min-height: 500px;
@@ -23,7 +24,6 @@
       width: 910px;
       overflow: hidden;
     }
-    h2 { margin: 0; color:white;}
     /* button
 ---------------------------------------------- */
     .button {
@@ -180,28 +180,28 @@ function loadOptions() {
 $(document).ready(function() {
   var links = JSON.parse(localStorage['savedLinks']);
   var options = JSON.parse(localStorage['options']);
-    if (!options) { var options = {}; }
+  if (!options) { var options = {}; }
   if (!links || links.length == 0) {
     $('#clearAll').hide();
   }
   $( "#check" ).button();
   $('#check').prop("checked",!options.faviconDisabled).button("refresh");
   var faviconDisabled = options.faviconDisabled;
-    $('#check').click (function () {
-        var thisCheck = $(this);
-        if (thisCheck.is (':checked')) {
-            options.faviconDisabled = false;
-            } else {
-            options.faviconDisabled = true;
-            }
-            localStorage.setItem('options', JSON.stringify(options));
+  $('#check').click (function () {
+    var thisCheck = $(this);
+    if (thisCheck.is (':checked')) {
+      options.faviconDisabled = false;
+    } else {
+      options.faviconDisabled = true;
+    }
+    localStorage.setItem('options', JSON.stringify(options));
     });
-    loadOptions();
-    $( "#tabs" ).tabs({
-        event: "mouseover"
-        });
-   $( "#container" ).resizable();
- });
+  loadOptions();
+  $( "#tabs" ).tabs({
+    event: "mouseover"
+  });
+  $( "#container" ).resizable();
+});
 </script>
 
 <body>
